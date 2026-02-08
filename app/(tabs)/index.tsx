@@ -1,5 +1,5 @@
 import { Image } from "expo-image";
-import { Platform, StyleSheet } from "react-native";
+import { Platform, StyleSheet, TouchableOpacity } from "react-native";
 
 import { HelloWave } from "@/components/hello-wave";
 import ParallaxScrollView from "@/components/parallax-scroll-view";
@@ -9,7 +9,6 @@ import { Link, useRouter } from "expo-router";
 
 export default function HomeScreen() {
   const router = useRouter();
-
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
@@ -24,6 +23,18 @@ export default function HomeScreen() {
         <ThemedText type="title">Welcome!</ThemedText>
         <HelloWave />
       </ThemedView>
+
+      <TouchableOpacity onPress={() => router.push("/demo")}>
+        <ThemedText type="subtitle" style={{ marginBottom: 16, color: "blue" }}>
+          Go to Demo Screen
+        </ThemedText>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => router.push("/lifecycle")}>
+        <ThemedText type="subtitle" style={{ marginBottom: 16, color: "blue" }}>
+          Go to Lifecycle Demo
+        </ThemedText>
+      </TouchableOpacity>
 
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Step 1: Try it</ThemedText>
@@ -43,37 +54,23 @@ export default function HomeScreen() {
       </ThemedView>
 
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Go to Demo Page</ThemedText>
-        <ThemedText
-          type="defaultSemiBold"
-          onPress={() => router.push("/demo")}
-          style={{ color: "#007AFF" }}
-        >
-          Tap here to open Demo
-        </ThemedText>
-      </ThemedView>
-
-      <ThemedView style={styles.stepContainer}>
         <Link href="/modal">
           <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
+            <ThemedText type="subtitle">Step 2: Explore somehting</ThemedText>
           </Link.Trigger>
 
           <Link.Preview />
-
           <Link.Menu>
             <Link.MenuAction
               title="Action"
               icon="cube"
               onPress={() => alert("Action pressed")}
             />
-
             <Link.MenuAction
               title="Share"
               icon="square.and.arrow.up"
               onPress={() => alert("Share pressed")}
             />
-
             <Link.Menu title="More" icon="ellipsis">
               <Link.MenuAction
                 title="Delete"
@@ -89,7 +86,6 @@ export default function HomeScreen() {
           {`Tap the Explore tab to learn more about what's included in this starter app.`}
         </ThemedText>
       </ThemedView>
-
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
         <ThemedText>
