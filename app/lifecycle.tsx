@@ -8,6 +8,23 @@ export default function Lifecycle() {
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
 
+  const pollingRef = useRef<NodeJS.Timeout | null>(null);
+
+  const startPolling = () => {
+    if (pollingRef.current) return;
+    pollingRef.current = setInterval(() => {
+      console.log("Polling... app is active");
+    }, 2000);
+  };
+
+  const stopPolling = () => {
+    if (pollingRef.current) {
+      clearInterval(pollingRef.current);
+      pollingRef.current = null;
+      console.log("Polling paused");
+    }
+  };
+
   useEffect(() => {
     const loadState = async () => {
       const saved = await AsyncStorage.getItem("counter");
@@ -18,27 +35,34 @@ export default function Lifecycle() {
 
   useEffect(() => {
     const subscription = AppState.addEventListener("change", (nextAppState) => {
-      // App goes to background → save state
+      // App goes to background → save state + pause polling
       if (
         appState.current === "active" &&
         nextAppState.match(/inactive|background/)
       ) {
         AsyncStorage.setItem("counter", JSON.stringify(count));
+        stopPolling();
       }
 
-      // App returns to foreground → resume tasks
+      // App returns to foreground → resume polling
       if (
         appState.current.match(/inactive|background/) &&
         nextAppState === "active"
       ) {
-        console.log("App is active again — resume tasks here");
+        startPolling();
       }
 
       appState.current = nextAppState;
       setAppStateVisible(appState.current);
     });
 
-    return () => subscription.remove();
+    // Start polling initially
+    startPolling();
+
+    return () => {
+      subscription.remove();
+      stopPolling();
+    };
   }, [count]);
 
   const simulateRequest = async () => {
